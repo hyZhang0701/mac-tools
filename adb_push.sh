@@ -4,6 +4,8 @@
 
 set -e
 
+VERSION="1.0.0"
+
 cmd_help() {
     cat <<EOF
 用法: adb_push <文件或目录> [目标目录]
@@ -16,6 +18,7 @@ cmd_help() {
 
 选项:
   --check         检查运行环境（adb、ffprobe、设备连接）
+  -v, --version   显示版本号
   --help, -h      显示此帮助
 
 示例:
@@ -69,6 +72,8 @@ case "$INPUT" in
         cmd_help; exit 0 ;;
     --check)
         cmd_check; exit 0 ;;
+    -v|--version)
+        echo "adb_push v$VERSION"; exit 0 ;;
 esac
 
 if [ -z "$INPUT" ]; then
