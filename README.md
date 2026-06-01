@@ -50,7 +50,7 @@ adb_push ~/Documents/videos/my_video_folder
 默认传到手机的 `/sdcard/DCIM/` 目录，也可以指定目标路径：
 
 ```bash
-~/scripts/adb_push.sh ~/Downloads/photo.jpg /sdcard/Pictures
+adb_push ~/Downloads/photo.jpg /sdcard/Pictures
 ```
 
 ### 说明
