@@ -22,18 +22,28 @@ brew install android-platform-tools
 2. 「设置 → 开发者选项」→ 开启「USB 调试」
 3. 用 USB 线连接 Mac，手机上弹出「允许 USB 调试」→ 点允许
 
+### 安装脚本
+
+下载脚本后，将所在目录加入 PATH，之后可以在任意位置直接调用：
+
+```bash
+# 以脚本放在 ~/scripts/ 为例，在 ~/.zshrc 中添加：
+echo 'export PATH="$HOME/scripts:$PATH"' >> ~/.zshrc
+source ~/.zshrc
+```
+
 ### 使用方法
 
 **传单个文件**
 
 ```bash
-~/scripts/adb_push.sh ~/Downloads/video.mp4
+adb_push.sh ~/Downloads/video.mp4
 ```
 
 **传整个目录（支持批量）**
 
 ```bash
-~/scripts/adb_push.sh ~/Documents/videos/my_video_folder
+adb_push.sh ~/Documents/videos/my_video_folder
 ```
 
 支持的文件格式：`mp4 / mov / mkv / avi / wmv / 3gp / jpg / jpeg / png / gif / bmp / webp / heic`
