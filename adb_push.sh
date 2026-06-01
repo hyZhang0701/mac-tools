@@ -4,7 +4,7 @@
 
 set -e
 
-VERSION="1.1.1"
+VERSION="1.2.0"
 
 cmd_help() {
     cat <<EOF
@@ -46,6 +46,13 @@ cmd_check() {
         echo "✓ ffprobe  $(ffprobe -version 2>&1 | head -1)"
     else
         echo "✗ ffprobe  未安装（视频元数据缺失，抖音可能无法显示）→ brew install ffmpeg"
+    fi
+
+    # exiftool
+    if command -v exiftool &>/dev/null; then
+        echo "✓ exiftool $(exiftool -ver)"
+    else
+        echo "✗ exiftool 未安装（图片时间轴位置可能不正确）→ brew install exiftool"
     fi
 
     # 设备连接
@@ -124,13 +131,30 @@ push_file() {
             ;;
     esac
 
+    local PUSH_FILE="$FILE"
+
+    # 图片：写入当前时间的 EXIF，鸿蒙相册按 date_taken(EXIF) 排序
+    if [[ "$MIME" == image/* ]] && command -v exiftool &>/dev/null; then
+        local TMPFILE=$(mktemp /tmp/adb_push_XXXXXX."$EXT_LOWER")
+        cp "$FILE" "$TMPFILE"
+        local EXIF_DATE=$(date +"%Y:%m:%d %H:%M:%S")
+        exiftool -overwrite_original -q \
+            -DateTimeOriginal="$EXIF_DATE" \
+            -CreateDate="$EXIF_DATE" \
+            "$TMPFILE" 2>/dev/null || true
+        PUSH_FILE="$TMPFILE"
+    fi
+
     echo "▶ 传输: $FILENAME"
-    adb push "$FILE" "$DEST_PATH"
+    adb push "$PUSH_FILE" "$DEST_PATH"
+    adb shell touch "$DEST_PATH"
+
+    [ "$PUSH_FILE" != "$FILE" ] && rm -f "$PUSH_FILE"
 
     if [ -n "$MEDIA_URI" ]; then
         local NOW_S=$(date +%s)
         local NOW_MS=$((NOW_S * 1000))
-        local EXTRA_BINDS="--bind \"date_added:i:$NOW_S\" --bind \"date_taken:l:$NOW_MS\""
+        local EXTRA_BINDS="--bind \"date_added:i:$NOW_S\" --bind \"date_modified:i:$NOW_S\""
 
         if [[ "$MIME" == video/* ]] && command -v ffprobe &>/dev/null; then
             local DURATION_S=$(ffprobe -v quiet -show_entries format=duration \
