@@ -13,7 +13,7 @@ Mac 实用脚本集合。
 **Mac 端**
 
 ```bash
-brew install android-platform-tools
+brew install android-platform-tools ffmpeg exiftool
 ```
 
 **手机端（一次性设置）**
@@ -69,4 +69,5 @@ adb_push ~/Downloads/photo.jpg /sdcard/Pictures
 
 - 视频文件会自动读取时长、分辨率并写入 MediaStore，确保抖音等 App 能正常显示
 - 图片文件直接写入 MediaStore，相册立即可见
-- 依赖 `ffprobe`（随 ffmpeg 安装）提取视频元数据，如未安装会跳过元数据写入
+- 依赖 `ffprobe`（随 ffmpeg 安装）提取视频元数据，确保抖音等 App 可见
+- 依赖 `exiftool` 为图片写入当前时间的 EXIF，确保相册时间轴位置正确（鸿蒙 4.x）
