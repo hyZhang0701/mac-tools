@@ -24,26 +24,25 @@ brew install android-platform-tools
 
 ### 安装脚本
 
-下载脚本后，将所在目录加入 PATH，之后可以在任意位置直接调用：
-
 ```bash
-# 以脚本放在 ~/scripts/ 为例，在 ~/.zshrc 中添加：
-echo 'export PATH="$HOME/scripts:$PATH"' >> ~/.zshrc
-source ~/.zshrc
+curl -o /usr/local/bin/adb_push https://raw.githubusercontent.com/hyZhang0701/mac-tools/main/adb_push.sh
+chmod +x /usr/local/bin/adb_push
 ```
+
+安装后可在任意位置直接使用 `adb_push` 命令。
 
 ### 使用方法
 
 **传单个文件**
 
 ```bash
-adb_push.sh ~/Downloads/video.mp4
+adb_push ~/Downloads/video.mp4
 ```
 
 **传整个目录（支持批量）**
 
 ```bash
-adb_push.sh ~/Documents/videos/my_video_folder
+adb_push ~/Documents/videos/my_video_folder
 ```
 
 支持的文件格式：`mp4 / mov / mkv / avi / wmv / 3gp / jpg / jpeg / png / gif / bmp / webp / heic`
