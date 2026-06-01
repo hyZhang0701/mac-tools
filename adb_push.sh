@@ -4,7 +4,7 @@
 
 set -e
 
-VERSION="1.1.0"
+VERSION="1.1.1"
 
 cmd_help() {
     cat <<EOF
@@ -130,7 +130,7 @@ push_file() {
     if [ -n "$MEDIA_URI" ]; then
         local NOW_S=$(date +%s)
         local NOW_MS=$((NOW_S * 1000))
-        local EXTRA_BINDS="--bind \"date_added:i:$NOW_S\" --bind \"date_taken:i:$NOW_MS\""
+        local EXTRA_BINDS="--bind \"date_added:i:$NOW_S\" --bind \"date_taken:l:$NOW_MS\""
 
         if [[ "$MIME" == video/* ]] && command -v ffprobe &>/dev/null; then
             local DURATION_S=$(ffprobe -v quiet -show_entries format=duration \
