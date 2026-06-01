@@ -1,0 +1,51 @@
+# mac-tools
+
+Mac 实用脚本集合。
+
+---
+
+## adb_push.sh
+
+通过 USB 有线将文件从 Mac 传输到 Android 手机，传完自动写入媒体库，抖音、小红书等 App 可直接看到。
+
+### 环境准备
+
+**Mac 端**
+
+```bash
+brew install android-platform-tools
+```
+
+**手机端（一次性设置）**
+
+1. 进入「设置 → 关于手机」，连续点击「版本号」7 次，开启开发者模式
+2. 「设置 → 开发者选项」→ 开启「USB 调试」
+3. 用 USB 线连接 Mac，手机上弹出「允许 USB 调试」→ 点允许
+
+### 使用方法
+
+**传单个文件**
+
+```bash
+~/scripts/adb_push.sh ~/Downloads/video.mp4
+```
+
+**传整个目录（支持批量）**
+
+```bash
+~/scripts/adb_push.sh ~/Documents/videos/my_video_folder
+```
+
+支持的文件格式：`mp4 / mov / mkv / avi / wmv / 3gp / jpg / jpeg / png / gif / bmp / webp / heic`
+
+默认传到手机的 `/sdcard/DCIM/` 目录，也可以指定目标路径：
+
+```bash
+~/scripts/adb_push.sh ~/Downloads/photo.jpg /sdcard/Pictures
+```
+
+### 说明
+
+- 视频文件会自动读取时长、分辨率并写入 MediaStore，确保抖音等 App 能正常显示
+- 图片文件直接写入 MediaStore，相册立即可见
+- 依赖 `ffprobe`（随 ffmpeg 安装）提取视频元数据，如未安装会跳过元数据写入
