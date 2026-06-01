@@ -4,14 +4,75 @@
 
 set -e
 
+cmd_help() {
+    cat <<EOF
+用法: adb_push <文件或目录> [目标目录]
+      adb_push --check
+      adb_push --help
+
+参数:
+  <文件或目录>    要传输的文件或目录（目录会批量传输所有媒体文件）
+  [目标目录]      手机上的目标路径，默认 /sdcard/DCIM
+
+选项:
+  --check         检查运行环境（adb、ffprobe、设备连接）
+  --help, -h      显示此帮助
+
+示例:
+  adb_push ~/Downloads/video.mp4
+  adb_push ~/Documents/videos/my_folder
+  adb_push ~/Downloads/photo.jpg /sdcard/Pictures
+
+支持格式: mp4 / mov / mkv / avi / wmv / 3gp / jpg / jpeg / png / gif / bmp / webp / heic
+EOF
+}
+
+cmd_check() {
+    echo "=== 环境检查 ==="
+    echo ""
+
+    # adb
+    if command -v adb &>/dev/null; then
+        echo "✓ adb      $(adb --version | head -1)"
+    else
+        echo "✗ adb      未安装 → brew install android-platform-tools"
+    fi
+
+    # ffprobe
+    if command -v ffprobe &>/dev/null; then
+        echo "✓ ffprobe  $(ffprobe -version 2>&1 | head -1)"
+    else
+        echo "✗ ffprobe  未安装（视频元数据缺失，抖音可能无法显示）→ brew install ffmpeg"
+    fi
+
+    # 设备连接
+    echo ""
+    DEVICES=$(adb devices 2>/dev/null | grep -v "List of devices" | grep "device$" | wc -l | tr -d ' ')
+    if [ "$DEVICES" -gt 0 ]; then
+        echo "✓ Android 设备已连接（共 ${DEVICES} 台）"
+        adb devices | grep "device$" | awk '{print "    " $1}'
+    else
+        echo "✗ 未检测到 Android 设备"
+        echo "  请确认："
+        echo "    1. USB 线已连接"
+        echo "    2. 手机已开启「USB 调试」（开发者选项）"
+        echo "    3. 手机上已点击「允许 USB 调试」弹窗"
+    fi
+    echo ""
+}
+
 INPUT="$1"
 DEST_DIR="${2:-/sdcard/DCIM}"
 
+case "$INPUT" in
+    --help|-h)
+        cmd_help; exit 0 ;;
+    --check)
+        cmd_check; exit 0 ;;
+esac
+
 if [ -z "$INPUT" ]; then
-    echo "用法: $0 <文件或目录> [目标目录]"
-    echo "示例: $0 ~/Downloads/video.mp4"
-    echo "示例: $0 ~/Documents/yt2xhs/output/videos/mAXgx9E1c0I"
-    exit 1
+    cmd_help; exit 1
 fi
 
 if [ ! -e "$INPUT" ]; then

@@ -33,6 +33,12 @@ chmod +x /usr/local/bin/adb_push
 
 ### 使用方法
 
+**检查环境是否就绪**
+
+```bash
+adb_push --check
+```
+
 **传单个文件**
 
 ```bash
@@ -43,6 +49,12 @@ adb_push ~/Downloads/video.mp4
 
 ```bash
 adb_push ~/Documents/videos/my_video_folder
+```
+
+**查看帮助**
+
+```bash
+adb_push --help
 ```
 
 支持的文件格式：`mp4 / mov / mkv / avi / wmv / 3gp / jpg / jpeg / png / gif / bmp / webp / heic`
