@@ -4,7 +4,7 @@
 
 set -e
 
-VERSION="1.2.0"
+VERSION="1.2.1"
 
 cmd_help() {
     cat <<EOF
@@ -195,11 +195,11 @@ elif [ -d "$INPUT" ]; then
     echo "找到 $COUNT 个文件，开始传输..."
     echo ""
 
-    while IFS= read -r FILE; do
+    while IFS= read -r FILE <&3; do
         [ -z "$FILE" ] && continue
         push_file "$FILE"
         echo ""
-    done <<< "$FILES"
+    done 3<<< "$FILES"
 
     echo "全部完成！共传输 $COUNT 个文件。"
 fi
